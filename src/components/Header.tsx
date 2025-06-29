@@ -1,16 +1,15 @@
-
-import React, { useState } from 'react';
-import { ShoppingBag, Menu, X, Search, Heart, User } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useApp } from '../contexts/AppContext';
+import React, { useState } from "react";
+import { ShoppingBag, Menu, X, Search, Heart, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useApp } from "../contexts/AppContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems, wishlistItems, setSearchQuery } = useApp();
+  const { cart, wishlistItems, setSearchQuery, isAuthenticated } = useApp();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -18,9 +17,18 @@ const Header = () => {
     e.preventDefault();
     if (searchInput.trim()) {
       setSearchQuery(searchInput.trim());
-      navigate('/search');
-      setSearchInput('');
+      navigate("/search");
+      setSearchInput("");
       setIsSearchOpen(false);
+    }
+  };
+
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      navigate("/signup");
+    } else {
+      navigate("/cart");
     }
   };
 
@@ -30,41 +38,52 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="text-xl md:text-2xl font-bold text-gray-800">
+            <Link
+              to="/"
+              className="text-xl md:text-2xl font-bold text-gray-800"
+            >
               Elegante.
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className={`font-medium transition-colors duration-200 text-sm uppercase tracking-wide ${
-                isActive('/') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                isActive("/")
+                  ? "text-rose-600"
+                  : "text-gray-700 hover:text-rose-600"
               }`}
             >
               Home
             </Link>
-            <Link 
-              to="/collection" 
+            <Link
+              to="/collection"
               className={`font-medium transition-colors duration-200 text-sm uppercase tracking-wide ${
-                isActive('/collection') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                isActive("/collection")
+                  ? "text-rose-600"
+                  : "text-gray-700 hover:text-rose-600"
               }`}
             >
               Collection
             </Link>
-            <Link 
-              to="/about" 
+            <Link
+              to="/about"
               className={`font-medium transition-colors duration-200 text-sm uppercase tracking-wide ${
-                isActive('/about') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                isActive("/about")
+                  ? "text-rose-600"
+                  : "text-gray-700 hover:text-rose-600"
               }`}
             >
               About
             </Link>
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               className={`font-medium transition-colors duration-200 text-sm uppercase tracking-wide ${
-                isActive('/contact') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                isActive("/contact")
+                  ? "text-rose-600"
+                  : "text-gray-700 hover:text-rose-600"
               }`}
             >
               Contact
@@ -73,13 +92,16 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-2">
-            <button 
+            <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
             >
               <Search className="w-5 h-5 text-gray-600" />
             </button>
-            <Link to="/wishlist" className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 relative">
+            <Link
+              to="/wishlist"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 relative"
+            >
               <Heart className="w-5 h-5 text-gray-600" />
               {wishlistItems.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -87,32 +109,39 @@ const Header = () => {
                 </span>
               )}
             </Link>
-            <Link to="/profile" className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
+            <Link
+              to="/profile"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            >
               <User className="w-5 h-5 text-gray-600" />
             </Link>
-            <Link to="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
+            <button
+              onClick={handleCartClick}
+              className="relative p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            >
               <ShoppingBag className="w-5 h-5 text-gray-600" />
-              {cartItems.length > 0 && (
+              {isAuthenticated && cart && cart.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                  {cart.items.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
 
           {/* Mobile Actions */}
           <div className="flex md:hidden items-center space-x-2">
-            <button 
+            <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="p-2"
             >
               <Search className="w-5 h-5 text-gray-600" />
             </button>
-            <button 
-              className="p-2"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -143,37 +172,45 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-gray-100 animate-fade-in">
             <nav className="flex flex-col space-y-4 mt-4">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className={`font-medium text-sm uppercase tracking-wide ${
-                  isActive('/') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                  isActive("/")
+                    ? "text-rose-600"
+                    : "text-gray-700 hover:text-rose-600"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                to="/collection" 
+              <Link
+                to="/collection"
                 className={`font-medium text-sm uppercase tracking-wide ${
-                  isActive('/collection') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                  isActive("/collection")
+                    ? "text-rose-600"
+                    : "text-gray-700 hover:text-rose-600"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Collection
               </Link>
-              <Link 
-                to="/about" 
+              <Link
+                to="/about"
                 className={`font-medium text-sm uppercase tracking-wide ${
-                  isActive('/about') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                  isActive("/about")
+                    ? "text-rose-600"
+                    : "text-gray-700 hover:text-rose-600"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className={`font-medium text-sm uppercase tracking-wide ${
-                  isActive('/contact') ? 'text-rose-600' : 'text-gray-700 hover:text-rose-600'
+                  isActive("/contact")
+                    ? "text-rose-600"
+                    : "text-gray-700 hover:text-rose-600"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -181,7 +218,10 @@ const Header = () => {
               </Link>
             </nav>
             <div className="flex items-center justify-between mt-6">
-              <Link to="/wishlist" className="p-2 hover:bg-gray-100 rounded-full relative">
+              <Link
+                to="/wishlist"
+                className="p-2 hover:bg-gray-100 rounded-full relative"
+              >
                 <Heart className="w-5 h-5 text-gray-600" />
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -189,17 +229,23 @@ const Header = () => {
                   </span>
                 )}
               </Link>
-              <Link to="/profile" className="p-2 hover:bg-gray-100 rounded-full">
+              <Link
+                to="/profile"
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
                 <User className="w-5 h-5 text-gray-600" />
               </Link>
-              <Link to="/cart" className="relative p-2 hover:bg-gray-100 rounded-full">
+              <button
+                onClick={handleCartClick}
+                className="relative p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              >
                 <ShoppingBag className="w-5 h-5 text-gray-600" />
-                {cartItems.length > 0 && (
+                {isAuthenticated && cart && cart.items.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                    {cart.items.reduce((sum, item) => sum + item.quantity, 0)}
                   </span>
                 )}
-              </Link>
+              </button>
             </div>
           </div>
         )}
