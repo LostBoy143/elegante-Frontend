@@ -189,7 +189,6 @@ const Cart = () => {
           return sum + currentQuantity;
         }, 0),
       };
-
       // Store order details in localStorage for confirmation page
       localStorage.setItem("lastOrder", JSON.stringify(orderDetails));
 
