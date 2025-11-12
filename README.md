@@ -219,9 +219,9 @@ Then upload the `dist` folder to your hosting service.
 
 **Your Name**
 
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- Portfolio: [Your Portfolio Website](https://yourportfolio.com)
-- Email: your.email@example.com
+- LinkedIn: [Your LinkedIn Profile]([https://linkedin.com/in/yourprofile](https://www.linkedin.com/in/shubham-singh-35153122b/))
+- Portfolio: [Your Portfolio Website](https://www.alphashubham.xyz)
+- Email: singhshubham620278@gmail.com
 
 ## 📝 License
 
