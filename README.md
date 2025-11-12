@@ -4,7 +4,7 @@ A modern, full-stack e-commerce application built with React, TypeScript, and No
 
 ## 🚀 Live Demo
 
-[View Live Application]([https://elegante-frontend.vercel.app](https://elegante-frontend-to49.vercel.app/))
+🚀 [**Live Demo →**](https://elegante-frontend-to49.vercel.app/)
 
 ## 📋 Table of Contents
 
